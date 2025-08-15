@@ -7,6 +7,7 @@ import Experience from "../../components/Experience";
 import Education from "../../components/Education";
 import Skills from "../../components/Skills";
 import SocialMedia from "@/components/SocialMedia";
+import Languages from "@/components/Language";
 
 export default function CVPage() {
   const cvRef = useRef<HTMLDivElement>(null);
@@ -41,12 +42,31 @@ export default function CVPage() {
       <div ref={cvRef} className="max-w-4xl w-full bg-white p-8 shadow-lg">
         {cvData ? (
           <>
-            <PersonalInfo data={cvData.personalInformation} />
-            <Summary data={cvData.summary} />
-            <SocialMedia />
-            <Experience data={cvData.experience} />
-            <Education data={cvData.education} />
-            <Skills data={cvData.relevantSkills} />
+            <PersonalInfo data={cvData.personalInformation} lang={cvData.languageCodeOfJobDescription} />
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold border-b-2 border-gray-400 pb-2 mb-4">Summary</h2>
+              <div className="grid grid-cols-3 gap-6">
+                <div className="col-span-2">
+                  <p className='text-justify'>{cvData.summary}</p>
+                </div>
+                <div className="col-span-1">
+                  <Skills data={cvData.relevantSkills} lang={cvData.languageCodeOfJobDescription} />
+                </div>
+              </div>
+            </div>
+            <SocialMedia  />
+            <Experience data={cvData.experience} lang={cvData.languageCodeOfJobDescription} />
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold border-b-2 border-gray-400 pb-2 mb-4">Education</h2>
+              <div className="grid grid-cols-3 gap-6">
+                <div className="col-span-2">
+            <Education data={cvData.education} lang={cvData.languageCodeOfJobDescription} />
+                </div>
+                <div className="col-span-1">
+                  <Languages lang={cvData.languageCodeOfJobDescription} />
+                </div>
+              </div>
+            </div>
           </>
         ) : (
           <p>Loading CV data...</p>
