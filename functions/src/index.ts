@@ -57,7 +57,8 @@ export const generateCv = functions.https.onCall(async (data) => {
       {
         "title": "...", 
         "company": "...", 
-        "date": "...",
+        "start": "...",
+        "end": "...",
         "description": "..."
       }
     ], 
@@ -66,8 +67,19 @@ export const generateCv = functions.https.onCall(async (data) => {
         "title": "...", 
         "description": "..."
       }
-    ], 
-    "skills": []
+    ],
+        "education": [
+            {
+                "school": "...",
+                "degree": "...",
+                "start": "...",
+                "end": "..."
+            },   
+    "relevantSkills": [{
+      "skillName": "...",
+      "skillLevel": "0...100"
+    }] ,
+    "languageCodeOfJobDescription": "..."
   }
 
   `;

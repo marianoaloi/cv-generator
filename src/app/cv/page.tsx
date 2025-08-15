@@ -6,6 +6,7 @@ import Summary from "../../components/Summary";
 import Experience from "../../components/Experience";
 import Education from "../../components/Education";
 import Skills from "../../components/Skills";
+import SocialMedia from "@/components/SocialMedia";
 
 export default function CVPage() {
   const cvRef = useRef<HTMLDivElement>(null);
@@ -20,8 +21,12 @@ export default function CVPage() {
 
   const handleExport = () => {
     if (cvRef.current) {
-      const html = cvRef.current.innerHTML;
-      const blob = new Blob([html], { type: "text/html" });
+      const htmlCenter = cvRef.current.innerHTML;
+      const fixHTML = `<html><head>  <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+ </head><body>${htmlCenter}</body></html>`;
+      const blob = new Blob([fixHTML], { type: "text/html" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -36,11 +41,12 @@ export default function CVPage() {
       <div ref={cvRef} className="max-w-4xl w-full bg-white p-8 shadow-lg">
         {cvData ? (
           <>
-            <PersonalInfo data={cvData.personalInfo} />
+            <PersonalInfo data={cvData.personalInformation} />
             <Summary data={cvData.summary} />
+            <SocialMedia />
             <Experience data={cvData.experience} />
             <Education data={cvData.education} />
-            <Skills data={cvData.skills} />
+            <Skills data={cvData.relevantSkills} />
           </>
         ) : (
           <p>Loading CV data...</p>
