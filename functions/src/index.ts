@@ -2,7 +2,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { configDotenv } from "dotenv";
-
+import * as fs from "fs";
 
 import { google } from "googleapis";
 
@@ -10,7 +10,9 @@ configDotenv();
 
 
 admin.initializeApp();
-const cred = require('./cert/curriculum-29102-9e559bc27c95.json')
+// const cred = require('./cert/curriculum-29102-9e559bc27c95.json')
+const cred = JSON.parse(fs.readFileSync('./cert/curriculum-29102-9e559bc27c95.json', 'utf8'));
+
 
 const auth = new google.auth.GoogleAuth({
   credentials: cred,
@@ -20,39 +22,36 @@ const auth = new google.auth.GoogleAuth({
 const drive = google.drive({ version: 'v3', auth });
 
 // import { defineSecret } from "firebase-functions/params";
-// console.log(defineSecret("GEMINI_API").value())
+// logger.log(defineSecret("GEMINI_API").value())
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API || "ERROR+API");
 
 export const generateCv = functions.https.onCall(async (data) => {
-  const { jobDescription } = data as any;
+  const { jobDescription } = data.data;
 
   const resp = await drive.files.get({
     fileId: "1_ITG99dojjmn4uA3QazqAoVNryc3UZyP",
     alt: 'media'
   })
 
-  const chunks: Uint8Array[] = [];
-  const reader = resp.body?.getReader();
-  if (reader) {
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-    }};
+  const rdata = resp.data;
 
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
-  const prompt = `Based on the following job description, generate a professional Curriculum Vitae in JSON format. The CV should be tailored to the job description and include sections for personal information, summary, work experience, education, and skills. The JSON structure should be as follows: 
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+  const prompt = `Based on my json job experience data 
+    =====================================  
+    experience data :
+    ${JSON.stringify(rdata)}
+    and based on the following job description
+    =====================================  
+    Job Description:
+    ${jobDescription}
+    =====================================
+
+    , generate a professional Curriculum Vitae in JSON format. The CV should be tailored to the job description and include sections for personal information, summary, work experience, education, and skills. The JSON structure should be as follows: 
   {
-    "personalInfo": {
-      "name": "...", 
-      "email": "...", 
-      "phone": "...",
-      "linkedin": "..."
-    }, 
     "summary": "...", 
     "experience": [
       {
@@ -62,27 +61,25 @@ export const generateCv = functions.https.onCall(async (data) => {
         "description": "..."
       }
     ], 
-    "education": [
+    interistingProjects": [
       {
-        "degree": "...", 
-        "university": "...", 
-        "date": "..."
+        "title": "...", 
+        "description": "..."
       }
     ], 
     "skills": []
   }
-  
-  Job Description:
-  ${jobDescription}`;
+
+  `;
 
   const result = await model.generateContent(prompt);
   const response = await result.response;
-  const text = await response.text();
+  const text = await response.text().replace("```json","").replace("```","");
 
   try {
     return JSON.parse(text);
   } catch (e) {
-    console.error("Error parsing JSON from Gemini API:", text);
+    functions.logger.error("Error parsing JSON from Gemini API:", text);
     throw new functions.https.HttpsError("internal", "Failed to parse CV data from AI service.");
   }
 });

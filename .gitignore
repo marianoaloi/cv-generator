@@ -44,3 +44,4 @@ next-env.d.ts
 #Custom Maloi
 *.log
 functions/cert/curriculum-29102-9e559bc27c95.json
+node_modules
