@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useState, useEffect } from "react";
 import PersonalInfo from "../../components/PersonalInfo";
 import Summary from "../../components/Summary";
