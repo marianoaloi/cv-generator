@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { connect } from "http2";
 
 const firebaseConfig = {
@@ -19,6 +20,11 @@ if (!getApps().length) {
   if(process.env.NODE_ENV === 'development'){
     connectFunctionsEmulator(getFunctions(app), 'localhost', 5001);
   }
+} else {
+  app = getApps()[0];
 }
 
+// Initialize Auth
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
 export { app };

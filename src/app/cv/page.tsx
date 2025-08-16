@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PersonalInfo from "../../components/PersonalInfo";
 import Summary from "../../components/Summary";
 import Experience from "../../components/Experience";
@@ -8,17 +9,51 @@ import Education from "../../components/Education";
 import Skills from "../../components/Skills";
 import SocialMedia from "@/components/SocialMedia";
 import Languages from "@/components/Language";
+import { useAuth } from "../../contexts/AuthContext";
+import Certificate from "@/components/Certificate";
 
 export default function CVPage() {
   const cvRef = useRef<HTMLDivElement>(null);
   const [cvData, setCvData] = useState<any>(null);
+  const { user, loading: authLoading, logout } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/");
+      return;
+    }
+
     const data = localStorage.getItem("cvData");
     if (data) {
       setCvData(JSON.parse(data));
     }
-  }, []);
+  }, [user, authLoading, router]);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  if (authLoading) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center p-24">
+        <div className="text-lg">Loading...</div>
+      </main>
+    );
+  }
+
+  if (!user) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center p-24">
+        <div className="text-lg">Redirecting to login...</div>
+      </main>
+    );
+  }
 
   const handleExport = async () => {
     if (cvRef.current) {
@@ -48,37 +83,46 @@ export default function CVPage() {
             <div >
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
-                  <p className='text-justify' dangerouslySetInnerHTML={{ __html: cvData.summary }} />
+                  <Summary data={cvData.summary} lang={cvData.languageCodeOfJobDescription} />
                 </div>
                 <div className="col-span-1">
                   <Skills data={cvData.relevantSkills} lang={cvData.languageCodeOfJobDescription} />
                 </div>
               </div>
             </div>
-            <SocialMedia  />
+            <SocialMedia />
             <Experience data={cvData.experience} lang={cvData.languageCodeOfJobDescription} />
             <div className="mb-8">
               <h2 className="text-2xl font-bold border-b-2 border-gray-400 pb-2 mb-4">Education</h2>
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
-            <Education data={cvData.education} lang={cvData.languageCodeOfJobDescription} />
+                  <Education data={cvData.educations} lang={cvData.languageCodeOfJobDescription} />
                 </div>
                 <div className="col-span-1">
                   <Languages lang={cvData.languageCodeOfJobDescription} />
                 </div>
               </div>
             </div>
+            <Certificate data={cvData.certificates} lang={cvData.languageCodeOfJobDescription} />
           </>
         ) : (
           <p>Loading CV data...</p>
         )}
       </div>
-      <button
-        className="mt-8 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        onClick={handleExport}
-      >
-        Export as HTML
-      </button>
+      <div className="mt-8 flex gap-4">
+        <button
+          className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          onClick={handleExport}
+        >
+          Export as HTML
+        </button>
+        <button
+          className="px-6 py-3 bg-gray-600 text-white font-semibold rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+          onClick={handleLogout}
+        >
+          Sign Out
+        </button>
+      </div>
     </main>
   );
 }
