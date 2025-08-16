@@ -50,7 +50,7 @@ export const generateCv = functions.https.onCall(async (data) => {
     ${jobDescription}
     =====================================
 
-    , generate a professional Curriculum Vitae in JSON format. The CV should be tailored to the job description and include sections for personal information, summary, work experience, education, and skills. The JSON structure should be as follows: 
+    , generate a professional Curriculum Vitae in JSON format. The CV should be tailored to the job description and include sections for personal information, summary, work experience, education, and skills. To be prolix in write the summawy with 2 or 3 paragraphs, if need destac can add HTML tags. The JSON structure should be as follows: 
   {
     "summary": "...", 
     "experience": [

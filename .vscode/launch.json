@@ -5,19 +5,38 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "command": "npm start",
-            "name": "Run npm run dev",
+            "command": "npm run dev",
+            "name": "start front",
             "request": "launch",
-            "type": "node-terminal"
+            "type": "node-terminal",
+            "cwd": "${workspaceFolder}",
+            "env": {"PORT":"8854"}
+        },
+        {
+            "command": "nodemon.cmd --exec npm run serve -e ts",
+            "name": "start back",
+            "request": "launch",
+            "type": "node-terminal",
+            "cwd": "${workspaceFolder}/functions"
         },
 
         {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "url": "http://localhost:8080",
+            "url": "http://localhost:8854",
             "webRoot": "${workspaceFolder}"
         }
     ],
-    
+    "compounds": [
+        {
+            "name": "Run ALL",
+            "configurations": [
+                "Launch Chrome against localhost",
+                "start back",
+                "start front"
+            ],
+            "stopAll": true
+        }
+    ]
 }

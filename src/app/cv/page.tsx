@@ -43,11 +43,10 @@ export default function CVPage() {
         {cvData ? (
           <>
             <PersonalInfo data={cvData.personalInformation} lang={cvData.languageCodeOfJobDescription} />
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold border-b-2 border-gray-400 pb-2 mb-4">Summary</h2>
+            <div >
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
-                  <p className='text-justify'>{cvData.summary}</p>
+                  <p className='text-justify' dangerouslySetInnerHTML={{ __html: cvData.summary }} />
                 </div>
                 <div className="col-span-1">
                   <Skills data={cvData.relevantSkills} lang={cvData.languageCodeOfJobDescription} />
