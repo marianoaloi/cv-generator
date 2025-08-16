@@ -13,7 +13,7 @@ interface PersonalInfoProps {
 const PersonalInfo: React.FC<PersonalInfoProps> = ({ data , lang }) => {
   return (
     <div className="text-center mb-8">
-      <h1 className="text-4xl font-bold">{data.name}</h1>
+      <h1 className="text-4xl font-bold">Mariano Aloi</h1>
       <div className='text-xs flex justify-between items-center gap-2'>
         <span>SOLUTION ARCHITECT</span>	 <span>📍 UDINE</span> 
 <span>☎️ +39 378 091 4635</span>

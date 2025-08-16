@@ -50,7 +50,7 @@ export const generateCv = functions.https.onCall(async (data) => {
     ${jobDescription}
     =====================================
 
-    , generate a professional Curriculum Vitae in JSON format. The CV should be tailored to the job description and include sections for personal information, summary, work experience, education, and skills. To be prolix in write the summawy with 2 or 3 paragraphs, if need destac can add HTML tags. The JSON structure should be as follows: 
+    , generate a professional Curriculum Vitae in JSON format. The CV should be tailored to the job description and include sections for personal information, summary, work experience, education, and skills. To be prolix in write the summawy with 2 or 3 paragraphs, pleases highlight the technologies with bold , add HTML tag in 'summary' section , not include empty tag or tag with only break line. The JSON structure should be as follows: 
   {
     "summary": "...", 
     "experience": [
@@ -59,13 +59,15 @@ export const generateCv = functions.https.onCall(async (data) => {
         "company": "...", 
         "start": "...",
         "end": "...",
-        "description": "..."
+        "description": "...",
+        "technologies":[...]
       }
     ], 
     interistingProjects": [
       {
         "title": "...", 
         "description": "..."
+        "hightlightsOfTheProject":[...]
       }
     ],
         "education": [
@@ -79,6 +81,7 @@ export const generateCv = functions.https.onCall(async (data) => {
       "skillName": "...",
       "skillLevel": "0...100"
     }] ,
+     
     "languageCodeOfJobDescription": "..."
   }
 
@@ -87,9 +90,11 @@ export const generateCv = functions.https.onCall(async (data) => {
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const text = await response.text().replace("```json","").replace("```","");
+  const jsonDoc = JSON.parse(text);
+  jsonDoc["certificates"] = rdata["certificates"]
 
   try {
-    return JSON.parse(text);
+    return jsonDoc;
   } catch (e) {
     functions.logger.error("Error parsing JSON from Gemini API:", text);
     throw new functions.https.HttpsError("internal", "Failed to parse CV data from AI service.");

@@ -20,12 +20,14 @@ export default function CVPage() {
     }
   }, []);
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (cvRef.current) {
+      const style = await fetch((document.querySelector('link[data-precedence]') as HTMLLinkElement).href).then(t => t.text())
       const htmlCenter = cvRef.current.innerHTML;
       const fixHTML = `<html><head>  <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>${style}
+    </style>
  </head><body>${htmlCenter}</body></html>`;
       const blob = new Blob([fixHTML], { type: "text/html" });
       const url = URL.createObjectURL(blob);
