@@ -8,18 +8,18 @@ interface LanguagesProps {
   lang:string;
 }
 
-const Languages: React.FC<LanguagesProps> = (lang) => {
+const Languages: React.FC<LanguagesProps> = ({lang}) => {
   const data: LanguageItem[] = [
     {
-      "name": "Portuguese",
+      "name": (lang === "it" ? "Portuguese" : "Portuguese"),
       "value": 100
     },
     {
-      "name": "English",
+      "name": (lang === "it" ? "Inglese" : "English"),
       "value": 80
     },
     {
-      "name": "Italian",
+      "name": (lang === "it" ? "Italiano" : "Italian"),
       "value": 70
     }
   ]

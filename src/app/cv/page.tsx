@@ -15,6 +15,7 @@ import Certificate from "@/components/Certificate";
 export default function CVPage() {
   const cvRef = useRef<HTMLDivElement>(null);
   const [cvData, setCvData] = useState<any>(null);
+  const [opportunityId, setOpportunityId] = useState<string>("");
   const { user, loading: authLoading, logout } = useAuth();
   const router = useRouter();
 
@@ -28,6 +29,11 @@ export default function CVPage() {
     if (data) {
       setCvData(JSON.parse(data));
     }
+    
+    const oppId = localStorage.getItem("opportunityId");
+    if (oppId) {
+      setOpportunityId(oppId);
+    }
   }, [user, authLoading, router]);
 
   const handleLogout = async () => {
@@ -37,6 +43,10 @@ export default function CVPage() {
     } catch (error) {
       console.error("Error signing out:", error);
     }
+  };
+
+  const handleGoHome = () => {
+    router.push("/");
   };
 
   if (authLoading) {
@@ -68,7 +78,8 @@ export default function CVPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "cv.html";
+      const filename = opportunityId ? `Mariano_Aloi_${opportunityId}_${cvData.languageCodeOfJobDescription}.html` : "cv.html";
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -93,7 +104,7 @@ export default function CVPage() {
             <SocialMedia />
             <Experience data={cvData.experience} lang={cvData.languageCodeOfJobDescription} />
             <div className="mb-8">
-              <h2 className="text-2xl font-bold border-b-2 border-gray-400 pb-2 mb-4">Education</h2>
+              <h2 className="text-2xl font-bold border-b-2 border-gray-400 pb-2 mb-4">{cvData.languageCodeOfJobDescription === "it" ? "Educazione" : "Education"}</h2>
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
                   <Education data={cvData.educations} lang={cvData.languageCodeOfJobDescription} />
@@ -115,6 +126,12 @@ export default function CVPage() {
           onClick={handleExport}
         >
           Export as HTML
+        </button>
+        <button
+          className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          onClick={handleGoHome}
+        >
+          Generate New CV
         </button>
         <button
           className="px-6 py-3 bg-gray-600 text-white font-semibold rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"

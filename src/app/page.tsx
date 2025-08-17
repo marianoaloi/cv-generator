@@ -8,6 +8,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 export default function Home() {
   const [jobDescription, setJobDescription] = useState("");
+  const [opportunityId, setOpportunityId] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { user, loading: authLoading, signInWithGoogle, logout, getAuthToken } = useAuth();
@@ -25,8 +26,9 @@ export default function Home() {
         authToken: token 
       });
       const cvData = result.data;
-      // Store CV data in local storage to pass to the CV page
+      // Store CV data and opportunity ID in local storage to pass to the CV page
       localStorage.setItem("cvData", JSON.stringify(cvData));
+      localStorage.setItem("opportunityId", opportunityId);
       router.push("/cv");
     } catch (error) {
       console.error("Error generating CV:", error);
@@ -87,7 +89,21 @@ export default function Home() {
             </button>
           </div>
           
-          <p className="text-lg mb-8">Paste the job description below</p>
+          <div className="w-full max-w-2xl mb-4">
+            <label htmlFor="opportunityId" className="block text-sm font-medium text-gray-700 mb-2">
+              Opportunity Identifier (for filename)
+            </label>
+            <input
+              id="opportunityId"
+              type="text"
+              placeholder="e.g., CompanyName-Position-2024"
+              className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              value={opportunityId}
+              onChange={(e) => setOpportunityId(e.target.value)}
+            />
+          </div>
+          
+          <p className="text-lg mb-4">Paste the job description below</p>
           <textarea
             className="w-full max-w-2xl p-4 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             rows={10}

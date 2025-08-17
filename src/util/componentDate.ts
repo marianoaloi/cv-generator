@@ -1,6 +1,8 @@
 
-export const convertDate = (start: string): React.ReactNode => {
-    return new Date(start).toLocaleDateString('en-US', {
+export const convertDate = (sysDate: string): React.ReactNode => {
+    
+    const dateUse = sysDate ? new Date(sysDate) : new Date();
+    return dateUse.toLocaleDateString('en-US', {
         year: '2-digit',
         month: '2-digit',
     });
@@ -9,7 +11,7 @@ export const convertDate = (start: string): React.ReactNode => {
 export const calculateDateDifference = (startDate: string, endDate: string, languageCode: string): string => {
     // Normalize dates to first day of month
     const start = new Date(startDate.substring(0, 8) + '01');
-    const end = new Date(endDate.substring(0, 8) + '01');
+    const end = endDate ? new Date(endDate.substring(0, 8) + '01') : new Date();
     
     // Calculate difference in months
     const yearDiff = end.getFullYear() - start.getFullYear();

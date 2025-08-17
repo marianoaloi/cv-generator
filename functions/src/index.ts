@@ -60,7 +60,7 @@ export const generateCv = functions
   }
 
   const resp = await drive.files.get({
-    fileId: "1_ITG99dojjmn4uA3QazqAoVNryc3UZyP",
+    fileId: process.env.FILE_ID || "ERROR+API" ,
     alt: 'media'
   })
 

@@ -19,12 +19,12 @@ const Experience: React.FC<ExperienceProps> = ({ data, lang }) => {
 
   return (
     <div className="mb-8">
-      <h2 className="text-2xl font-bold border-b-2 border-gray-400 pb-2 mb-4">Experience</h2>
+      <h2 className="text-2xl font-bold border-b-2 border-gray-400 pb-2 mb-4">{lang === 'it' ? 'Esperienza Professionale' : 'Professional Experience'}</h2>
       {data.map((item, index) => (
 
         <div key={index} className="mb-4">
           <h3 className="text-xl font-bold">{item.title}</h3>
-          <p className="text-lg font-semibold">{item.company} | {convertDate(item.start)} - {convertDate(item.end)} <span className='text-xs text-gray-500'>({calculateDateDifference(item.start, item.end, lang)})</span></p>
+          <p className="text-lg font-semibold">{item.company} | {convertDate(item.start)} - {item.end ? convertDate(item.end) : lang === 'it' ? 'Presente' : 'Present'} <span className='text-xs text-gray-500'>({calculateDateDifference(item.start, item.end, lang)})</span></p>
           <div className='text-justify' dangerouslySetInnerHTML={{ __html: identParagraph(item.description) }} />
           <div className="flex flex-wrap justify-between gap-2 mt-2">
             {

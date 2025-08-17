@@ -16,7 +16,7 @@ const Certificate: React.FC<CertificateProps> = ({ data, lang }) => {
 
  return (
     <div className="mb-8">
-        <h2 className="text-2xl font-bold border-b-2 border-gray-400 pb-2 mb-4">Certificates</h2>
+        <h2 className="text-2xl font-bold border-b-2 border-gray-400 pb-2 mb-4">{lang === 'it' ? 'Certificazioni' : 'Certificates'}</h2>
       
       <div className="flex flex-wrap gap-4">
         {data.map((item, index) => (
