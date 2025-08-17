@@ -1,7 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { connect } from "http2";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,

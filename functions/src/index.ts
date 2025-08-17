@@ -6,6 +6,7 @@ import * as fs from "fs";
 import { marked } from "marked";
 
 import { google } from "googleapis";
+import prompt from "./prompt";
 
 configDotenv();
 
@@ -17,12 +18,12 @@ if (admin.apps.length === 0) {
 const cred = JSON.parse(fs.readFileSync('./cert/curriculum-29102-9e559bc27c95.json', 'utf8'));
 
 
-const auth = new google.auth.GoogleAuth({
+const authDrive = new google.auth.GoogleAuth({
   credentials: cred,
   scopes: ['https://www.googleapis.com/auth/drive.readonly']
 });
 
-const drive = google.drive({ version: 'v3', auth });
+const drive = google.drive({ version: 'v3', auth: authDrive });
 
 // import { defineSecret } from "firebase-functions/params";
 // logger.log(defineSecret("GEMINI_API").value())
@@ -70,50 +71,9 @@ export const generateCv = functions
 
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-  const prompt = `Based on my json job experience data 
-    =====================================  
-    experience data :
-    ${JSON.stringify(rdata)}
-    and based on the following job description
-    =====================================  
-    Job Description:
-    ${jobDescription}
-    =====================================
-
-    , generate a professional Curriculum Vitae in JSON format. The CV should be tailored to the job description and include sections for personal information, summary, work experience, education, and skills. To be prolix in write the summawy with 2 or 3 paragraphs, pleases highlight the technologies with bold , add HTML tag in 'summary' and 'experience description' sections , not include empty tag or tag with only break line. Return all the companies experiences, if the experience with the company not match so much return a simple resume of the experience.  The JSON structure should be as follows: 
-  {
-    "summary": "...", 
-    "experience": [
-      {
-        "title": "...", 
-        "company": "...", 
-        "start": "...",
-        "end": "...",
-        "description": "...",
-        "technologies":[...]
-      }
-    ], 
-    interistingProjects": [
-      {
-        "title": "...", 
-        "description": "..."
-        "hightlightsOfTheProject":[...]
-      }
-    ],
-          
-    "relevantSkills": [{
-      "skillName": "...",
-      "skillLevel": "0...100"
-    }] ,
-     
-    "languageCodeOfJobDescription": "..."
-  }
-
-  `;
-
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const text = await response.text().replace("```json","").replace("```","");
+  const result = await model.generateContent(prompt(rdata,jobDescription));
+  const response = result.response;
+  const text = response.text().replace("```json", "").replace("```", "");
   const jsonDoc = JSON.parse(text);
   
   // Convert markdown to HTML in text fields
