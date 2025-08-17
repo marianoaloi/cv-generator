@@ -1,16 +1,6 @@
 import React from 'react';
 
-interface PersonalInfoProps {
-  data: {
-    name: string;
-    email: string;
-    phone: string;
-    linkedin: string;
-  };
-  lang:string;
-}
-
-const PersonalInfo: React.FC<PersonalInfoProps> = ({ data , lang }) => {
+const PersonalInfo: React.FC = () => {
   return (
     <div className="text-center mb-8">
       <h1 className="text-4xl font-bold">Mariano Aloi</h1>

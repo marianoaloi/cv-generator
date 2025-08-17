@@ -8,10 +8,9 @@ interface EducationProps {
     start: string;
     end: string;
   }[];
-  lang:string;
 }
 
-const Education: React.FC<EducationProps> = ({ data , lang }) => {
+const Education: React.FC<EducationProps> = ({ data }) => {
 
   data.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
 

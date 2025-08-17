@@ -6,10 +6,9 @@ interface SkillItem {
 }
 interface SkillsProps {
   data: SkillItem[];
-  lang:string;
 }
 
-const Skills: React.FC<SkillsProps> = ({ data , lang }) => {
+const Skills: React.FC<SkillsProps> = ({ data }) => {
   data.sort((a, b) =>  a.skillName.localeCompare(b.skillName)  );
   data.sort((a, b) =>  b.skillLevel - a.skillLevel  );
 

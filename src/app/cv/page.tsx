@@ -12,9 +12,45 @@ import Languages from "@/components/Language";
 import { useAuth } from "../../contexts/AuthContext";
 import Certificate from "@/components/Certificate";
 
+interface CVData {
+  personalInformation: {
+    name: string;
+    email: string;
+    phone: string;
+    linkedin: string;
+  };
+  summary: string;
+  relevantSkills: Array<{
+    skillName: string;
+    skillLevel: number;
+  }>;
+  experience: Array<{
+    title: string;
+    company: string;
+    end: string;
+    start: string;
+    description: string;
+    technologies: string[];
+  }>;
+  educations: Array<{
+    degree: string;
+    school: string;
+    start: string;
+    end: string;
+  }>;
+  certificates: Array<{
+    name: string;
+    institute: string;
+    credential: string;
+    issued: string;
+    url: string;
+  }>;
+  languageCodeOfJobDescription: string;
+}
+
 export default function CVPage() {
   const cvRef = useRef<HTMLDivElement>(null);
-  const [cvData, setCvData] = useState<any>(null);
+  const [cvData, setCvData] = useState<CVData | null>(null);
   const [opportunityId, setOpportunityId] = useState<string>("");
   const { user, loading: authLoading, logout } = useAuth();
   const router = useRouter();
@@ -66,7 +102,7 @@ export default function CVPage() {
   }
 
   const handleExport = async () => {
-    if (cvRef.current) {
+    if (cvRef.current && cvData) {
       const style = await fetch((document.querySelector('link[data-precedence]') as HTMLLinkElement).href).then(t => t.text())
       const htmlCenter = cvRef.current.innerHTML;
       const fixHTML = `<html><head>  <meta charset="UTF-8" />
@@ -90,14 +126,14 @@ export default function CVPage() {
       <div ref={cvRef} className="max-w-4xl w-full bg-white p-8 shadow-lg">
         {cvData ? (
           <>
-            <PersonalInfo data={cvData.personalInformation} lang={cvData.languageCodeOfJobDescription} />
+            <PersonalInfo />
             <div >
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
                   <Summary data={cvData.summary} lang={cvData.languageCodeOfJobDescription} />
                 </div>
                 <div className="col-span-1">
-                  <Skills data={cvData.relevantSkills} lang={cvData.languageCodeOfJobDescription} />
+                  <Skills data={cvData.relevantSkills} />
                 </div>
               </div>
             </div>
@@ -107,7 +143,7 @@ export default function CVPage() {
               <h2 className="text-2xl font-bold border-b-2 border-gray-400 pb-2 mb-4">{cvData.languageCodeOfJobDescription === "it" ? "Educazione" : "Education"}</h2>
               <div className="grid grid-cols-3 gap-6">
                 <div className="col-span-2">
-                  <Education data={cvData.educations} lang={cvData.languageCodeOfJobDescription} />
+                  <Education data={cvData.educations} />
                 </div>
                 <div className="col-span-1">
                   <Languages lang={cvData.languageCodeOfJobDescription} />

@@ -1,5 +1,7 @@
 
-export default () => {
+import Image from 'next/image';
+
+const SocialMedia = () => {
     const data = [
         {"name":"linkedin/maloi","icon":"./linkedin-circle-svgrepo-com.svg","url":"https://www.linkedin.com/in/maloi"},
         {"name":"github/marianoaloi","icon":"./Octicons-mark-github.svg","url":"https://github.com/marianoaloi"},
@@ -11,7 +13,7 @@ export default () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {data.map((sm, index) => (
                     <div key={index} className="break-all">
-                        <img src={sm.icon} alt={sm.name} width={24} height={24} className="inline-block mr-2" />
+                        <Image src={sm.icon} alt={sm.name} width={24} height={24} className="inline-block mr-2" />
                         <a href={sm.url} className="text-blue-600 hover:text-blue-800 underline">
                             {sm.name}
                         </a>
@@ -21,3 +23,5 @@ export default () => {
         </div>
     )
 }
+
+export default SocialMedia;
