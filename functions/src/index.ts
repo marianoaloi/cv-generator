@@ -49,7 +49,13 @@ export const generateCv = functions
   // Additional token verification if needed
   try {
     if (authToken) {
-      await admin.auth().verifyIdToken(authToken);
+      const decodedToken = await admin.auth().verifyIdToken(authToken);
+      if (decodedToken.email !== process.env.OWNER_EMAIL){
+        throw new functions.https.HttpsError(
+      'unauthenticated',
+      'Only Maloi authenticated to generate CV.'
+    );
+      }
       functions.logger.info("Auth token verified successfully");
     }
   } catch (error) {
