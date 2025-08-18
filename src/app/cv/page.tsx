@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Head from "next/head";
 import PersonalInfo from "../../components/PersonalInfo";
 import Summary from "../../components/Summary";
 import Experience from "../../components/Experience";
@@ -72,6 +73,15 @@ export default function CVPage() {
     }
   }, [user, authLoading, router]);
 
+  useEffect(() => {
+    if (cvData) {
+      const title = opportunityId 
+        ? `Mariano_Aloi_${opportunityId}_${cvData.languageCodeOfJobDescription}` 
+        : `Mariano_Aloi_${cvData.languageCodeOfJobDescription}`;
+      document.title = title;
+    }
+  }, [cvData, opportunityId]);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -114,16 +124,27 @@ export default function CVPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      const filename = opportunityId ? `Mariano_Aloi_${opportunityId}_${cvData.languageCodeOfJobDescription}.html` : "cv.html";
+      const filename = opportunityId ? `Mariano_Aloi_${opportunityId}_${cvData.languageCodeOfJobDescription}.html` : `Mariano_Aloi_${cvData.languageCodeOfJobDescription}.html`;
       a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
     }
   };
 
+  const handlePrint = () => {
+    const cvElement = document.getElementById("cv");
+    if (cvElement && cvData) {
+      const originalContents = document.body.innerHTML;
+      const printContents = cvElement.innerHTML;
+      document.body.innerHTML = printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
+    }
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div ref={cvRef} className="max-w-4xl w-full bg-white p-8 shadow-lg">
+    <main className="flex min-h-screen flex-col items-center justify-center md:p-24">
+      <div id="cv" ref={cvRef} className="max-w-4xl w-full bg-white p-8 shadow-lg">
         {cvData ? (
           <>
             <PersonalInfo />
@@ -162,6 +183,12 @@ export default function CVPage() {
           onClick={handleExport}
         >
           Export as HTML
+        </button>
+        <button
+          className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+          onClick={handlePrint}
+        >
+          Print CV
         </button>
         <button
           className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
